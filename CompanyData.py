@@ -24,10 +24,8 @@ cwd = os.getcwd()
 
 class Company():
     '''
+    a collection of methods to retrieve stock price data for securities
     @ michael 3/23/11
-
-    a collection of methods to pull and parse stock price data for compannies
-
     '''
 
     def __init__(self, ticker):
@@ -41,7 +39,17 @@ class Company():
         hour = now.hour
         minute = now.minute
 
-    def get_daterangee():
+    def get_daterange():
+        """
+        Build a range of dates between two days to use as indx
+
+        :param w: 
+        :type w: 
+        :param obj: 
+        :type obj: 
+        :return: 
+        :rtype: 
+        """
         date_rng = pd.date_range(start='1/1/2018', end='1/08/2018', freq='H')
         timestamp_date_rng = pd.to_datetime(date_rng, infer_datetime_format=True)
 
@@ -55,6 +63,17 @@ class Company():
 
     
     def get_cbind_onloop(self, plot = False):
+        """
+        Download yahoo finance for an array of tickers and column bind them into
+        a singl dataframe --> (Format to pass directly into PyPortfolioOpt)
+
+        :param w: 
+        :type w: 
+        :param obj: 
+        :type obj: 
+        :return: 
+        :rtype: 
+        """
         tickers_list = ['AMZN','GOOGL', 'NVDA', 'MLM', 'ATO', 'KMI','JNJ', 'JPM', 'C']
         df = yfin.download(tickers_list,'2015-1-1')['Adj Close']
         print(df.head())
@@ -76,6 +95,16 @@ class Company():
 
 
     def write_csv_onloop(self):
+        """
+        Output csv files of historical time sries data for array of tickers
+
+        :param w: 
+        :type w: 
+        :param obj: 
+        :type obj: 
+        :return: 
+        :rtype: 
+        """
         tickers = [ 'BABA', 'TSLA', 'NVDA', 'EEM', 'AAPL', 'C', 'BAC', 'MELI']
         data_source = 'yahoo'
         start_date = '20201121'
@@ -89,6 +118,16 @@ class Company():
 
 
     def get_yahoo_financial_statements(self, download = False, upload = False):
+        """
+        Pars yahoo api via json urls to retrieve financial statement data
+
+        :param w: 
+        :type w: 
+        :param obj: 
+        :type obj: 
+        :return: 
+        :rtype: 
+        """
         response = yahooutils.build_financial_statements_urls(self.ticker)
         soup = BeautifulSoup(response.text, 'html.parser')
         data_dict = yahooutils.parse_financial_statements_json_response(soup)
@@ -112,6 +151,16 @@ class Company():
 
 
         def download_financial_statements_to_local(self):
+            """
+            download all financial statemnts on loop to local folder
+            
+            :param extracted_dict:  contains all k,v pairs of balanceshet line items
+            :type w: dict
+            :param obj: 
+            :type obj: 
+            :return: none
+            :rtype: 
+            """
             for k,v in self.extracted_dict.items(): # for each k = sheet type, v = []
                 localdir = f'{os.getcwd()}/output/yahoo_fundamentals/{self.ticker}/'  
                 if not os.path.isdir(localdir):
@@ -125,6 +174,16 @@ class Company():
             print('download successfull for ' + str(self.extracted_dict.keys()))
 
         def upload_financial_statements_to_db(self, upload_type='all'):
+            """
+            populate sql database with financial statment items feed from yahoo api parser
+            
+            :param w: 
+            :type w: 
+            :param obj: 
+            :type obj: 
+            :return: 
+            :rtype: 
+            """
             cwd  = os.getcwd() + '/'
             conn, creds = dbtools.connect(cwd)
 
@@ -151,6 +210,16 @@ class Company():
 
 
     def get_quote_table(self, indexvalues, nItems):
+        """
+        Pars yahoo api via json urls to retrieve financial statement data
+        
+        :param w: 
+        :type w: 
+        :param obj: 
+        :type obj: 
+        :return: 
+        :rtype: 
+        """
         frames = []
         indexnames = []
         for ticker in indexvalues[:nItems]:
@@ -173,6 +242,39 @@ class Company():
         print()
         print('Errors: ' + str(errorlist))
         return df
+    
+    def get_book_data(self):
+        """
+        retrieve full order book data from IEX which includes bid/ask spreads
+        
+        :param w: 
+        :type w: 
+        :param obj: 
+        :type obj: 
+        :return: 
+        :rtype: df
+        """
+        book = web.get_iex_book(self.ticker)
+        list(book.keys())
+        print(book)
+        orders = pd.concat([pd.DataFrame(book[side]).assign(side=side) for side in ['bids', 'asks']])
+        print(orders.head())
+        for key in book.keys():
+            try:
+                print(f'\n{key}')
+                print(pd.DataFrame(book[key]))
+            except:
+                print(book[key])
+        pd.DataFrame(book['trades']).head()
+    
+    def get_quandl(self):
+        symbol = 'FB.US'
+        quandl = web.DataReader(symbol, 'quandl', '2015-01-01')
+        quandl.info()
+    
+    def get_tiingo(self):
+        df = web.get_data_tiingo('GOOG', api_key=os.getenv('TIINGO_API_KEY'))
+
 
 
         
@@ -191,13 +293,17 @@ c = Company('AAPL')
 tickers = ['AAPL', 'TSLA']
 
 #c.get_solo()
-c.write_csv_onloop()
-c.get_cbind_onloop(plot = True)
-c.get_quote_table(tickers, len(tickers))
+# c.write_csv_onloop()
+# c.get_cbind_onloop(plot = True)
+# c.get_quote_table(tickers, len(tickers))
 
 
-for _t in tickers:
-    print(f'...processing for {_t}...')
-    Company(_t).get_yahoo_financial_statements(download = True, upload = False)
+# for _t in tickers:
+#     print(f'...processing for {_t}...')
+#     Company(_t).get_yahoo_financial_statements(download = True, upload = False)
 
+
+
+c.get_book_data()
+#c.get_quandl() # read api key
 

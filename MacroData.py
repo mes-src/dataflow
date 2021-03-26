@@ -1,4 +1,16 @@
-class Macro():
+
+class Macro(): # @ todo
+
+    """
+    retrieve macro economic data and broader market/indices data
+    
+    :param w: 
+    :type w: 
+    :param obj: 
+    :type obj: 
+    :return: 
+    :rtype: df
+    """
 
     def __init(self):
         pass
@@ -13,12 +25,45 @@ class Macro():
         #print(df.info())
 
 
-
-
-
 # @ todo
 
 #fred 
+
+def get_fred(self):
+    start = datetime(2010, 1, 1)
+
+    end = datetime(2013, 1, 27)
+
+    gdp = web.DataReader('GDP', 'fred', start, end)
+
+    gdp.info()
+
+    inflation = web.DataReader(['CPIAUCSL', 'CPILFESL'], 'fred', start, end)
+    inflation.info()
+
+def fama_french():
+    from pandas_datareader.famafrench import get_available_datasets
+    get_available_datasets()
+
+    ds = web.DataReader('5_Industry_Portfolios', 'famafrench')
+    print(ds['DESCR'])
+
+
+def world_bank():
+    from pandas_datareader import wb
+    gdp_variables = wb.search('gdp.*capita.*const')
+    gdp_variables.head()
+
+
+
+def oecd():
+    df = web.DataReader('TUD', 'oecd', end='2015')
+    df[['Japan', 'United States']]
+
+def euro_stat():
+    df = web.DataReader('tran_sf_railac', 'eurostat')
+
+
 import pandas as pd 
 
 import pandas_datareader as pdr
