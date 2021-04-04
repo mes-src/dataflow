@@ -1,0 +1,81 @@
+{
+  "bytes": 13955,
+  "count_of_rows": 816,
+  "hash": "4c226b5b4a2f8a0f8866e7b15203335d",
+  "licenses": [
+    {
+      "id": "odc-pddl",
+      "name": "open_data_commons_public_domain_dedication_and_license_v1.0",
+      "path": "http://opendatacommons.org/licenses/pddl/",
+      "title": "Open Data Commons Public Domain Dedication and License v1.0"
+    }
+  ],
+  "name": "bond-yields-us-10y",
+  "profile": "data-package",
+  "readme": null,
+  "resources": [
+    {
+      "bytes": 13955,
+      "dialect": {
+        "caseSensitiveHeader": false,
+        "delimiter": ",",
+        "doubleQuote": true,
+        "header": true,
+        "lineTerminator": "\r\n",
+        "quoteChar": "\"",
+        "skipInitialSpace": false
+      },
+      "dpp:streaming": true,
+      "encoding": "utf-8",
+      "format": "csv",
+      "hash": "2d039a8ee0d60a123f05d94014e8d96a",
+      "name": "monthly",
+      "path": "data/monthly.csv",
+      "profile": "tabular-data-resource",
+      "schema": {
+        "fields": [
+          {
+            "descriptor": "Date in ISO 8601",
+            "format": "%Y-%m-%d",
+            "name": "Date",
+            "type": "date"
+          },
+          {
+            "decimalChar": ".",
+            "description": "Percent per year",
+            "format": "default",
+            "groupChar": "",
+            "name": "Rate",
+            "type": "number"
+          }
+        ],
+        "missingValues": [
+          ""
+        ]
+      }
+    }
+  ],
+  "sources": [
+    {
+      "name": "Federal Reserve (Release H.15)",
+      "path": "http://www.federalreserve.gov/releases/h15/data.htm",
+      "title": "Federal Reserve (Release H.15)"
+    }
+  ],
+  "title": "10 year US Government Bond Yields (long-term interest rate)",
+  "version": "0.2.0",
+  "views": [
+    {
+      "name": "graph",
+      "spec": {
+        "group": "Date",
+        "series": [
+          "Rate"
+        ],
+        "type": "line"
+      },
+      "specType": "simple",
+      "title": "10 year US Government Bond Yields (Monthly granuarlity)"
+    }
+  ]
+}

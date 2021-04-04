@@ -38,3 +38,28 @@ def connect(cwd):
     
     
 
+def upload_financial_statements_to_db(self, upload_type='all'):
+    """
+    populate sql database with financial statment items feed from yahoo api parser
+
+    """
+    cwd  = os.getcwd() + '/'
+    conn, creds = dbtools.connect(cwd)
+
+    if upload_type == 'all':
+        statements_abrev_names = ['qbs','qis','qcf', 'abs','ais','acf']
+        for sheet_type in statements_abrev_names:
+            table_name = f'{self.ticker}_{sheet_type}'
+            csv_path = cwd + 'output/{}/{}.csv'.format(self.ticker, table_name)
+            df = pd.read_csv(csv_path, header = None)
+            print(df.head())  # sql alchemy
+            engine = create_engine('postgresql://{}:{}@{}:5432/{}'.format(creds.get('user'),creds.get('pass'),creds.get('host'), creds.get('db')))
+            uri = 'postgres+psycopg2://{}:{}@{}:5432/{}'.format(creds.get('user'),creds.get('pass'),creds.get('host'),creds.get('db'))
+            if not engine.dialect.has_table(engine, table_name): # if table !exist, create it
+                df.to_sql(table_name, uri)
+            else: 
+                df.to_sql(table_name, uri, if_exists='replace')
+    else:
+        pass
+
+
