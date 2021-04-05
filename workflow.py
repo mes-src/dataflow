@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 
 import numpy as np 
 
+from retrieve import MarketPrices as mktp
+
 class Workflow(tk.Frame):
 
     def __init__(self, master=None, param_dict = None):
@@ -36,17 +38,20 @@ class Workflow(tk.Frame):
         c2.grid(row=4,column=1) 
 
 
-        l1 = Label(self.window, text = 'Returns')
+        l = tk.Label(self.window, text = 'Time Series Workflow Options')
+        l.grid(row=0,column=2)
         option_list = [
-            "Universe C-bind",
-            "Individual Historical Prices - Solo",
-            "Individual Historical Prices & Desc",
+            "Time Series Analysis",
+            "Linear Regression",
+            "Risk Analysis",
+            "Comparitive Return Analysis",
         ]
         strat = tk.StringVar(self.window, option_list)
         strat.set(option_list[0])
         def init_flow(selected_value):
-            if selected_value == "Universe C-bind":
-                print('cbind')
+            if selected_value == "Risk Analysis":
+                df = mktp.historical_prices_cbind(arr=['BABA', 'GOOGL'], date_start='', date_end='')
+                print(df.head())
 
         opt = tk.OptionMenu(self.window, strat ,*option_list, command=init_flow)
         opt.grid(row=8,column=1)

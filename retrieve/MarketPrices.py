@@ -1,33 +1,29 @@
 import numpy as np
 import pandas as pd 
 import quandl
+import yfinance as yf
 
-def get_solo(self):
-    start = '2014'
-    end = datetime(2017, 5, 24)
-    df = web.DataReader(self.ticker, 'yahoo', start=start, end=end)
-    #df.info()
-    return df
-
-def get_quandl(self):
-    symbol = 'FB.US'
-    quandl = web.DataReader(symbol, 'quandl', '2015-01-01')
-    quandl.info()
-
-def get_tiingo(self):
-    df = web.get_data_tiingo('GOOG', api_key=os.getenv('TIINGO_API_KEY'))
-
-
-def get_cbind_onloop(plot = False):
+def historical_prices_cbind(arr= [], plot = False, date_start = '', date_end =''):
     """
-    Download yahoo finance for an array of tickers and column bind them into
-    a singl dataframe --> (Format to pass directly into PyPortfolioOpt)
+    column bind time series of historical stock returns for an array of individual securities
+    _________
+    :param arr: array of individual tickers to retrieve historical prices for
+    :type list: 
 
-    :return: historical price time series for array of tickers 
+    :param plot: line chart of all columns in df   
+    :type bool: 
+
+    :param date_start: date to start retrieval of data
+    :type pd.datetime: 
+
+    :param date_end: date to end retrieval of data
+    :type pd.datetime:  
+    ----------
+    :return: timeseries of historical prices
     :rtype: pd.dataframe
+    _________
     """
-    tickers_list = ['AMZN','GOOGL', 'NVDA', 'MLM', 'ATO', 'KMI','JNJ', 'JPM', 'C']
-    df = yfin.download(tickers_list,'2015-1-1')['Adj Close']
+    df = yf.download(arr,'2015-1-1')['Adj Close']
     print(df.head())
 
     def _plot():
@@ -45,6 +41,46 @@ def get_cbind_onloop(plot = False):
         _plot()
 
     return df
+
+
+
+def historical_prices_solo(symbol = None, source = 'yahoo', date_start = '', date_end =''):
+    """
+    retrieve a historical time series of individual price returns for a single company
+    _________
+    :param symbol: the ticker symbol for a companies equity
+    :type str: 
+
+    :param source: the source to use to retrieve the data: yahoo, tiingo, quandl
+    :type str:
+
+    :param date_start: date to start retrieval of data
+    :type pd.datetime: 
+
+    :param date_end: date to end retrieval of data
+    :type pd.datetime:  
+    ----------
+    :return: timeseries of historical prices
+    :rtype: pd.dataframe
+    _________
+    """
+
+    start = '2014'
+    end = datetime(2017, 5, 24)
+    df = web.DataReader(self.ticker, 'yahoo', start=start, end=end)
+    #df.info()
+
+    def get_quandl(self):
+        symbol = 'FB.US'
+        quandl = web.DataReader(symbol, 'quandl', '2015-01-01')
+        quandl.info()
+
+    def get_tiingo(self):
+        df = web.get_data_tiingo('GOOG', api_key=os.getenv('TIINGO_API_KEY'))
+    
+    return df
+
+
 
 
 def write_csv_onloop(self):
