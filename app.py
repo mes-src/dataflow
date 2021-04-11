@@ -87,7 +87,6 @@ class App(tk.Frame):
         def create_plot_window(selected_value):
             plot_window = Workflow(self.root, self.param_dict)
             plot_window.plot()
-
         opt = tk.OptionMenu(self.root, strat ,*option_list, command=create_plot_window)
         opt.grid(row=8,column=1)
 
