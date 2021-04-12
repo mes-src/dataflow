@@ -95,3 +95,10 @@ def get_yahoo_financial_statements(tickers = [], download = False, upload = Fals
 
 
 
+# use yahoo_fin
+
+def get_balance_sheet():
+    pass
+def get_cash_flow():
+    get_cash_flow('nflx', yearly = False)
+    pass
